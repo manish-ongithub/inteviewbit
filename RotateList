@@ -1,0 +1,88 @@
+Given a list, rotate the list to the right by k places, where k is non-negative.
+
+For example:
+
+Given 1->2->3->4->5->NULL and k = 2,
+return 4->5->1->2->3->NULL.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ * 
+ * typedef struct ListNode listnode;
+ * 
+ * listnode* listnode_new(int val) {
+ *     listnode* node = (listnode *) malloc(sizeof(listnode));
+ *     node->val = val;
+ *     node->next = NULL;
+ *     return node;
+ * }
+ */
+/**
+ * @input A : Head pointer of linked list 
+ * @input B : Integer
+ * 
+ * @Output head pointer of list.
+ */
+ int length(listnode *h)
+ {
+     int len = 0;
+     while(h!=NULL)
+     {
+         h=h->next;
+         len++;
+     }
+     return len;
+ }
+listnode* rotateRight(listnode* A, int B) {
+    listnode *current = A;
+    listnode *newHead = NULL;
+    listnode *tmp = NULL;
+    int counter = 1;
+    int len = length(A);
+    
+    int steps =  len - B;
+    if(B > len)
+    {
+        int temp = B % len;
+        steps = len - temp;
+    }
+    
+
+    
+    if (B == 0)
+        return A;
+        
+    while(counter < (steps) /*&& current != NULL*/)
+    {
+        current = current->next;
+        counter++;
+        /*
+        if(current == NULL)
+        {
+            current = A;
+        }
+        */
+    }
+    
+    /*
+    if(current == NULL)
+        return A;
+      */  
+        
+        
+    newHead = current;
+    
+    while(current->next != NULL)
+        current = current->next;
+        
+    current->next = A;
+    A = newHead->next;
+    newHead->next = NULL;
+    
+    return A;
+    
+}
