@@ -1,0 +1,204 @@
+You are given two linked lists representing two non-negative numbers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+
+    342 + 465 = 807
+Make sure there are no trailing zeros in the output list
+So, 7 -> 0 -> 8 -> 0 is not a valid response even though the value is still 807.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ * 
+ * typedef struct ListNode listnode;
+ * 
+ * listnode* listnode_new(int val) {
+ *     listnode* node = (listnode *) malloc(sizeof(listnode));
+ *     node->val = val;
+ *     node->next = NULL;
+ *     return node;
+ * }
+ */
+/**
+ * @input A : Head pointer of linked list 
+ * @input B : Head pointer of linked list 
+ * 
+ * @Output head pointer of list.
+ 
+ */
+ 
+ void printList(listnode *head)
+{
+    listnode *temp = head;
+    while(temp != NULL)
+    {
+        printf("%d  ", temp->val);
+        temp = temp->next;
+    }
+}
+ 
+ void updateResult(listnode** head,int num)
+ {
+     
+     /* allocate node */
+    listnode* new_node = (listnode*) malloc(sizeof(listnode));
+
+    /* put in the data  */
+    new_node->val  = num;
+
+    /* link the old list off the new node */
+    new_node->next = (*head);
+
+    /* move the head to point to the new node */
+    (*head)    = new_node;
+ }
+ int length(listnode* head)
+ {
+     int len = 0;
+     while(head != NULL)
+     {
+         len++;
+         head = head->next;
+     }
+     return len;
+     
+ }
+listnode* reverse(listnode* A) {
+    listnode* current,*prev,*next;
+    current = A;
+    prev = NULL;
+    while(current != NULL)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+        
+    }
+    A = prev;
+    return A;
+}
+
+ void reverseList(listnode** head_ref)
+{
+    listnode* prev   = NULL;
+    listnode* current = *head_ref;
+    listnode* next;
+    while (current != NULL)
+    {
+        next  = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    *head_ref = prev;
+}
+
+ 
+listnode* addTwoNumbers(listnode* A, listnode* B) {
+    
+    int lenA = length(A);
+    int lenB = length(B);
+    listnode *result = NULL;
+    if(lenB > lenA)
+    {
+    
+        listnode* temp = B;
+        B = A;
+        A = temp;
+    }
+    
+    //listnode *num1 = reverse(A);
+    //listnode *num2 = reverse(B);
+   // reverseList(&A);
+    //reverseList(&B);
+     listnode *num1 = A;
+    listnode *num2 = B;
+    
+   // printf("after reverse \n");
+    //printList(num1);
+//    printf("\n");
+    
+    int carry = 0;
+    while (num1 != NULL)
+    {
+        int a = num1->val;
+        //printf("%d ",a);
+        int sum = a + carry;
+        if(num2 != NULL)
+        {
+            int b = num2->val;
+            sum+= b;
+            if(sum >= 10)
+            {
+                carry = sum / 10;
+                int rem = sum % 10;
+                updateResult(&result,rem);
+            }
+            else
+            {
+                carry = 0;
+                updateResult(&result,sum);
+            }
+                
+            
+            num2 = num2->next;
+        }
+        else
+        {
+             if(sum >= 10)
+            {
+                carry = sum / 10;
+                int rem = sum % 10;
+                updateResult(&result,rem);
+            }
+            else
+            {
+                carry = 0;
+                updateResult(&result,sum);
+            }
+        }
+        num1 = num1->next;
+    }
+    if(carry > 0)
+        updateResult(&result,carry);
+   // printf("result \n");
+    reverseList(&result);
+    //printList(result);
+    
+    return result;
+}
+listnode* addTwoNumbers(listnode* A, listnode* B) {
+    listnode *prev = NULL, *node = NULL, *head = NULL;
+    int c = 0;
+    int C = 0;
+    while(A != NULL || B != NULL || c > 0) {
+        if(A != NULL) 
+            C += A->val;
+        if(B != NULL)
+            C += B->val;
+        C += c;
+        c = (C/10)%10;
+        C = C%10;
+        //printf("\n C val %d and c %d",C,c);
+        node = listnode_new(C);
+        if(prev == NULL) {
+            head = node;
+            prev = node;
+        }
+        else {
+            prev->next = node;
+            prev = node;
+        }
+        if(A!=NULL)
+            A = A->next;
+        if(B!=NULL)
+            B = B->next;
+        C = 0;
+    }
+    return head;
+}
